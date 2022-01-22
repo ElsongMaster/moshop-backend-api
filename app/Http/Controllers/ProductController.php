@@ -6,6 +6,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Faker\Factory as Faker;
 class ProductController extends Controller
 {
     /**
@@ -26,6 +27,7 @@ class ProductController extends Controller
      */
     public function store(Request $rq)
     {
+
         $validator = Validator::make($rq->all(),[
             'name'=>'required|string|min:4',
             'description'=>'required|string|min:4',
@@ -54,13 +56,15 @@ class ProductController extends Controller
             ]);
         }
 
-
+        $faker = Faker::create();
         $newProduct = new Product;
         $newProduct->name = $rq->name;
         $newProduct->description = $rq->description;
         $rq->file('cover')->storePublicly('img/uploads','public');
         $newProduct->cover_path = "/uploads/".$rq->file('cover')->hashName();
         $newProduct->price = $rq->price;
+        $newProduct->quantity = $faker->randomNumber( $min = 5, $max = 30);
+
         $newProduct->shop_id = $rq->user()->shop->id;
         $newProduct->cart_id = null;
         $newProduct->created_at= now() ;

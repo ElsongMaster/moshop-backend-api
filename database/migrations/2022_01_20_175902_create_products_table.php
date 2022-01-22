@@ -19,6 +19,7 @@ class CreateProductsTable extends Migration
             $table->string('description');
             $table->string('cover_path');
             $table->float('price');
+            $table->integer('quantity');
             $table->foreignId('shop_id')->constrained('shops','id');
             $table->foreignId('cart_id')->nullable()->constrained('carts','id');
             $table->dropForeign('products_shop_id_foreign');

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShopController;
 use App\Models\Product;
@@ -42,6 +43,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/v1/product/{id}', [ProductController::class, 'show']);
     Route::put('/v1/product/{id}', [ProductController::class, 'update']);
     Route::put('/v1/product/{id}/picture', [ProductController::class, 'updatePicture']);
+    Route::post('/v1/cart', [CartController::class, 'store']);
+    Route::get('/v1/cart', [CartController::class, 'index']);
 
 });
 

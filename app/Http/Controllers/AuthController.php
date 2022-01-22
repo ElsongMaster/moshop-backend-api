@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Product;
 use App\Models\Shop;
 use App\Models\User;
@@ -84,6 +85,13 @@ class AuthController extends Controller
         $shopPersonnal->user_id = $user->id;
         $shopPersonnal->save();
 
+        // panier personnel
+        $personnalCart = new Cart;
+        $personnalCart->quantity = 0;
+        $personnalCart->user_id = $user->id;
+        $personnalCart->save();
+
+
         //produit liée au shop
         $faker = Faker::create();
         for($i=0;$i<8;$i++){
@@ -92,6 +100,7 @@ class AuthController extends Controller
             $product->description = $faker->text(50);
             $product->cover_path = $faker->imageUrl($width = 640, $height = 480) ;
             $product->price = $faker->randomFloat($nbMaxDecimals = 2, $min = 1, $max = 2);
+            $product->quantity = $faker->randomNumber( $min = 1, $max = 30);
             $product->shop_id = $shopPersonnal->id;
            $product->cart_id = null;
             $product->created_at = now() ;
@@ -100,13 +109,7 @@ class AuthController extends Controller
         }
 
 
-        // $user = User::create([
-        //     'firstname' => $fields['firstname'],
-        //     'lastname' => $fields['lastname'],
-        //     'email' => $fields['email'],
-        //     'password' => Hash::make($fields['password']),
-        //     'picture' => $request->file('picture')->hashName(),
-        // ]);
+
 
 
         return response()->json([
