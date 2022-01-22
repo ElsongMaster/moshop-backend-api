@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
+use App\Models\Shop;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-
+use Faker\Factory as Faker;
 class AuthController extends Controller
 {
 
@@ -68,13 +70,36 @@ class AuthController extends Controller
         // dd($fields);
         // Sauvegarde de l'image
         $request->file('picture')->storePublicly('img/users', 'public');
-        $user = $request->user();
+        $user = new User;
         $user->firstname = $request->firstname;
         $user->lastname = $request->lastname;
         $user->email = $request->email;
-        $user->password = $request->password;
+        $user->password = Hash::make($request->password);
         $user->picture = $request->file('picture')->hashName();
         $user->save();
+
+        // Création du shop personnel
+        $shopPersonnal = new Shop;
+        $shopPersonnal->name =  "La boutique de ".$user->firstname." ".$user->lastname;
+        $shopPersonnal->user_id = $user->id;
+        $shopPersonnal->save();
+
+        //produit liée au shop
+        $faker = Faker::create();
+        for($i=0;$i<8;$i++){
+            $product = new Product;
+            $product->name = $faker->randomElement($array = array ("jus d'orange","coca","pomme","poire","baguette","sauce tomate","spaghetti","couque","fanta","gateau","bouteille d'eau","poisson","mangue","carotte","yahourt","pizza","nouilles")) ;
+            $product->description = $faker->text(50);
+            $product->cover_path = $faker->imageUrl($width = 640, $height = 480) ;
+            $product->price = $faker->randomFloat($nbMaxDecimals = 2, $min = 1, $max = 2);
+            $product->shop_id = $shopPersonnal->id;
+           $product->cart_id = null;
+            $product->created_at = now() ;
+            $product->updated_at = now() ;
+            $product->save();
+        }
+
+
         // $user = User::create([
         //     'firstname' => $fields['firstname'],
         //     'lastname' => $fields['lastname'],
@@ -104,7 +129,7 @@ class AuthController extends Controller
         $user = User::where('email', $fields['email'])->first();
 
         if (!$user || !Hash::check($fields['password'], $user->password)) {
-            return response(['message' => 'Bad creds'], 401);
+            return response(['message' => 'Bad creds, email or password is not correct'], 401);
         }
 
         $token = $user->createToken('myapptoken')->plainTextToken;

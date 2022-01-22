@@ -8,7 +8,16 @@ use Illuminate\Http\Request;
 use stdClass;
 class ShopController extends Controller
 {
+
     public function index(){
+        return response()->json([
+            "message"=>"Succès",
+            "data"=>Shop::all(),
+            "status"=>200,
+            "error"=>[]                      
+        ]);
+    }
+    public function mgshop(){
         $Moshop = Shop::where("user_id", "=", 1)->get()[0];
         $user = User::find(1);
         $products = [];
@@ -48,5 +57,48 @@ class ShopController extends Controller
             ];
 
             return response($response);
+    }
+
+    public function personnalShop(Request $rq){
+        $personnalShop = $rq->user()->shop;
+        return response()->json([
+            "message"=>"Succès",
+            "data"=>[
+                "id"=>1,
+                "name"=>$personnalShop->name,
+                "user_id"=>$personnalShop->user_id,
+                "created_at"=>$personnalShop->created_at,
+                "update_at"=>$personnalShop->updated_at?$personnalShop->updated_at:$personnalShop->created_at,
+                "products"=>$personnalShop->products()->get()         
+            ],
+            "status"=>200,
+            "error"=>[]
+
+        ]);
+    }
+
+
+    public function show($id){
+        $shop = Shop::find($id);
+
+
+        if(!$shop){
+            return response(["message"=>"the shop doesn't exist","status"=>401]);
+        }
+
+        return response()->json([
+            "message"=>"Succès",
+            "data"=>[
+                "id"=>$shop->id,
+                "name"=>$shop->name,
+                "user_id"=>$shop->user_id,
+                "created_at"=>$shop->created_at,
+                "update_at"=>$shop->updated_at?$shop->updated_at:$shop->created_at,
+                "products"=>$shop->products()->get()         
+            ],
+            "status"=>200,
+            "error"=>[]
+
+        ]);
     }
 }
