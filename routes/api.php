@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShopController;
 use App\Models\Product;
 use App\Models\User;
@@ -36,6 +37,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/v1/user/picture', [AuthController::class, 'updatePicture']);
     Route::get('/v1/shop', [ShopController::class, 'personnalShop']);
     Route::get('/v1/shop/{id}', [ShopController::class, 'show']);
+    Route::post('/v1/product', [ProductController::class, 'store']);
+    Route::delete('/v1/product/{id}', [ProductController::class, 'destroy']);
+    Route::get('/v1/product/{id}', [ProductController::class, 'show']);
+    Route::put('/v1/product/{id}', [ProductController::class, 'update']);
+    Route::put('/v1/product/{id}/picture', [ProductController::class, 'updatePicture']);
 
 });
 

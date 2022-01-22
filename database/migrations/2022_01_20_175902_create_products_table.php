@@ -21,6 +21,7 @@ class CreateProductsTable extends Migration
             $table->float('price');
             $table->foreignId('shop_id')->constrained('shops','id');
             $table->foreignId('cart_id')->nullable()->constrained('carts','id');
+            $table->dropForeign('products_shop_id_foreign');
             $table->timestamps();
         });
     }
