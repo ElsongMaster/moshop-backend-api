@@ -17,4 +17,8 @@ class Product extends Model
     {
         return $this->belongsTo(Shop::class);
     }
+
+    public function cartdetail(){
+        return $this->hasOne(Cartdetail::class);
+    }
 }

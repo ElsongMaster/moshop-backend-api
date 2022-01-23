@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cartdetail;
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -67,8 +69,14 @@ class CartController extends Controller
             // dd($user);
             $personnalCart = $user->cart;
             $product->cart_id = $personnalCart->id;
-            $product->quantity - $rq->qunatity;
+            $product->quantity - $rq->quantity;
             $product->save();
+
+            // details of product in the cart
+            $newCartdetail  = new Cartdetail;
+            $newCartdetail->quantity = $rq->quantity;
+            $newCartdetail->product_id = $product->id;
+            $newCartdetail->save();
         }
 
         return response([
@@ -88,7 +96,7 @@ class CartController extends Controller
      */
     public function show($id)
     {
-        //
+
     }
 
     /**

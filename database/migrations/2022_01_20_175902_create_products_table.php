@@ -18,10 +18,10 @@ class CreateProductsTable extends Migration
             $table->string('name');
             $table->string('description');
             $table->string('cover_path');
-            $table->float('price');
+            $table->float('price', 8, 2);
             $table->integer('quantity');
-            $table->foreignId('shop_id')->constrained('shops','id');
-            $table->foreignId('cart_id')->nullable()->constrained('carts','id');
+            $table->foreignId('shop_id')->constrained('shops', 'id');
+            $table->foreignId('cart_id')->nullable()->constrained('carts', 'id');
             $table->dropForeign('products_shop_id_foreign');
             $table->timestamps();
         });
